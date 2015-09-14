@@ -62,7 +62,7 @@ fr:
   charts_deviation_label: "#%{issue_id}"
   charts_deviation_project_label: "projet"
   charts_deviation_group_logged: "Jours réalisés"
-  charts_deviation_group_remaining: "jours restants"
+  charts_deviation_group_remaining: "Jours restants"
   charts_deviation_group_estimated: "Jours estimés"
   charts_deviation_help: "Ratio des jours réalisés et restants pour chaque jours et demandes estimées. Ce ratio devrait être inférieur ou égal à 100%. Seules les demandes estimées sont affichés. La première barre représente les données moyennes pour le projet."
 
