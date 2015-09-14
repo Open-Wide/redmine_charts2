@@ -8,14 +8,18 @@ class ChartsBurndownController < ChartsController
     total_estimated_hours, total_logged_hours, total_remaining_hours, total_predicted_hours, total_done = get_data_for_burndown_chart
 
     max = 0
+    sold = []
     estimated = []
     logged = []
     remaining = []
     predicted = []
-
+    
+    sold_hours = get_project_sold_hours
+    
     @range[:keys].each_with_index do |key,index|
       max = total_predicted_hours[index] if max < total_predicted_hours[index]
       max = total_estimated_hours[index] if max < total_estimated_hours[index]
+      sold << [sold_hours, t(:charts_burndown_hint_sold, { :sold_hours => RedmineCharts::Utils.round(sold_hours) })]
       estimated << [total_estimated_hours[index], t(:charts_burndown_hint_estimated, { :estimated_hours => RedmineCharts::Utils.round(total_estimated_hours[index]) })]
       logged  << [total_logged_hours[index], t(:charts_burndown_hint_logged, { :logged_hours => RedmineCharts::Utils.round(total_logged_hours[index]) })]
       remaining << [total_remaining_hours[index], t(:charts_burndown_hint_remaining, { :remaining_hours => RedmineCharts::Utils.round(total_remaining_hours[index]), :work_done => total_done[index] > 0 ? Integer(total_done[index]) : 0 })]
@@ -27,6 +31,7 @@ class ChartsBurndownController < ChartsController
     end
 
     sets = [
+      [l(:charts_burndown_group_sold), sold],
       [l(:charts_burndown_group_estimated), estimated],
       [l(:charts_burndown_group_logged), logged],
       [l(:charts_burndown_group_remaining), remaining],
@@ -136,6 +141,14 @@ class ChartsBurndownController < ChartsController
     [total_estimated_hours, total_logged_hours, total_remaining_hours, total_predicted_hours, total_done]
   end
 
+  def get_project_sold_hours
+    @project.visible_custom_field_values.each do |custom_value|
+      if custom_value.custom_field.name == 'Temps vendu' and !custom_value.value.blank?
+        return custom_value.value
+      end
+    end
+    0
+  end
   def get_title
     l(:charts_link_burndown)
   end
